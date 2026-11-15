@@ -1,0 +1,74 @@
+[beat 1] (narration): Salt in your mouth. Sand under your cheek. The surf drags at your boots and lets go.
+[beat 1] (narration): You sit up. A harbour. A crooked town climbing the hill behind it. You do not know its name.
+[beat 1] (narration): You do not know your own name, either.
+[beat 1] (narration): Something stiff in your coat pocket. A page, torn from a book. It is all you have.
+[beat 1]   choices: Read the page | Put it away and stand up
+[beat 1]   > Read the page
+[beat 1] (narration): Ruled lines and a careful hand. 40 barrels of rum. 60 hogsheads of sugar. 800 pieces of eight.
+[beat 1] (narration): And at the foot of the page, a total: 800 pieces.
+[beat 1] You: Something about that sum sits wrong. I cannot say what. I cannot even say whose page this is.
+[beat 1]   choices: Put it away and stand up
+[beat 1]   > Put it away and stand up
+[beat 1] (narration): A low wooden building, open to the sea air. Lamplight. Voices. The smell of rum punch.
+[beat 1]   choices: Go inside | Stay on the sand a while longer
+[beat 1]   > Go inside
+[beat 2] (narration): You push the door open. Warm air, candle smoke, and every voice in the room dropping by half.
+[beat 2] (narration): Plank floor. Long tables. Barrels for seats. Candles guttering in the sea air.
+[beat 2] (narration): Behind the bar, a big man is wiping a mug. He looks up at you.
+[beat 2] (narration): His hand stops. For half a breath he stares at your face like a man seeing a ghost.
+[beat 2] (narration): Then the cloth moves again, and his eyes go somewhere else.
+[beat 2] Bartender: Tide's been throwing all sorts up today. Sit anywhere that isn't taken.
+[beat 2] Bartender: What'll it be? There's rum punch, and there's more rum punch.
+[beat 2]   choices: Do you know me? | Where am I? | Who are those two? | Take the page from your pocket and lay it on the bar | Leave him be
+[beat 2]   > Take the page from your pocket and lay it on the bar
+[beat 3] (narration): You take the torn page from your pocket and smooth it flat on the bar.
+[beat 3] (narration): Ruled lines. Columns of figures. A page from a ship's ledger.
+[beat 3] (narration): The bartender looks at it the way a man looks at a lit fuse.
+[beat 3] Bartender: I pour drinks. I don't read books.
+[beat 3] Bartender: If it's figures, that's the bo'sun's trade. Table by the barrels. And keep that thing off my bar.
+[beat 3] (narration): In the corner, the rogue's hat has tilted up, just a little. At the far table, a quill has stopped scratching.
+[beat 3] (narration): The bo'sun has not turned a leaf since the page came out. His quill hangs over the book.
+[beat 3]   choices: Show him the page | Say nothing yet
+[beat 3]   > Show him the page
+[beat 3] (narration): You set the torn page down beside his ledger.
+[beat 3] (narration): He reads one line, then the next. 40 barrels. 60 hogsheads. 800 pieces of eight.
+[beat 3] (narration): His finger stops at the foot of the page, on 800 pieces.
+[beat 3] (narration): The bo'sun goes very quiet.
+[beat 3] (narration): The quill does not move. The candle between you is suddenly the loudest thing in the room.
+[beat 3] You: You can read it. What does it say?
+[beat 3] (narration): He does not answer. He turns the page face down, very gently, and keeps his hand flat on top of it.
+[beat 3] Bartender: Drinks, gentlemen. On the house. Whatever that is, it will keep till the cups are full.
+[beat 3] (narration): In the corner, the rogue tips his hat back and crooks one finger at you.
+[beat 4] (narration): The rogue hooks a stool out with his boot. He does not ask you to sit so much as allow it.
+[beat 4] Rogue: That page under the bo'sun's hand. You carried it in, so it's yours to carry out.
+[beat 4] Rogue: Fetch it back before the old man gets his spectacles on it. Bring it to me. I'll see you fed, dressed, and on a boat by morning.
+[beat 4]   choices: Why do you want it? | What does the page say? | What will it cost to hear the truth? | Refuse. Let the bo'sun read it. | Say nothing and step away
+[beat 4]   > Refuse. Let the bo'sun read it.
+[beat 5] Rogue: Your funeral. Figures only say what's gone. They never say who took it.
+[beat 5] (narration): Across the room, the bo'sun has put his spectacles on and turned the page face up.
+[beat 5] (narration): The bo'sun has his spectacles on. The page lies face up between you.
+[beat 5]   choices: Ask him to read it aloud | Step away for now
+[beat 5]   > Ask him to read it aloud
+[beat 5] Bo'sun: It is a tally of stores taken aboard. The written figures are one hand. I made the count beside them myself.
+[beat 5] Bo'sun: Rum. The page says 40 barrels. I counted 28 in the hold. 12 barrels short.
+[beat 5] Bo'sun: Sugar. 60 hogsheads written, 60 counted. The sugar is honest.
+[beat 5] Bo'sun: Silver. 800 pieces of eight written. I counted 650.
+[beat 5] Bo'sun: So the total at the foot is wrong. It says 800 pieces. There are 650. 150 pieces of eight are missing.
+[beat 5] (narration): He says it very quietly. In the corner, the rogue has stopped smiling.
+[beat 5] Bartender: That's enough of that at my bar. Who's dry?
+[beat 5]   choices: Where did the silver go? | And the rum? | Why did you go quiet? | Step back and make up your mind | Step away for now
+[beat 5]   > Step back and make up your mind
+[beat 6] (narration): Three men in a room, and one torn page. The bo'sun's count. The rogue's offer. The bartender's careful silence.
+[beat 6] (narration): Nobody here is going to tell you who you were. You will have to decide who to trust, and what the page really says.
+[beat 6]   choices: Trust the bo'sun | Trust the rogue | Trust the bartender | Not yet
+[beat 6]   > Trust the bartender
+[beat 6] (narration): And the page. What does it really say?
+[beat 6]   choices: It says someone stole 150 pieces of eight. | It says the bo'sun counted wrong. | It says nothing. It is only paper.
+[beat 6]   > It says the bo'sun counted wrong.
+[beat 6] You: Maybe the old man counted wrong. 800 is what is written, and the writing is all I have.
+[beat 6] (narration): You carry the page to the bar and slide it under the bartender's cloth.
+[beat 6] Bartender: I never saw it. I never saw you.
+[beat 6] (narration): He pours two cups anyway, and pushes one across. His hand is not quite steady.
+[beat 6] (narration): Outside, the tide is going out. You still do not know your name. But you know what you are holding, and who you are standing next to.
+[beat 6] (narration): The end, for now. Thank you for playing Buccaneer Banter.
+[beat 6] (narration): He does not look up. His hand stays flat on the page.
