@@ -1,12 +1,13 @@
 {
   "name": "buccaneer-banter",
-  "version": "0.2.0",
-  "description": "Buccaneer Banter - playable spine, beats 1-6 (Bridge The Gap Hacks, Nov 15-21, 2026)",
+  "version": "0.3.0",
+  "description": "Buccaneer Banter - beats 1-6 with an optional LLM dialogue layer (Bridge The Gap Hacks, Nov 15-21, 2026)",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node serve.js",
-    "test": "node test/check-lines.mjs",
-    "test:play": "python3 test/play_beats.py"
+    "test": "node test/check-lines.mjs && node test/check-director.mjs",
+    "test:play": "python3 test/play_beats.py",
+    "test:llm": "python3 test/play_llm.py"
   }
 }

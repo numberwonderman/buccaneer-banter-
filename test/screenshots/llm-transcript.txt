@@ -1,0 +1,76 @@
+LLM layer ON, stand-in model (test/mock-llm.mjs). Source of each NPC line is shown in brackets.
+
+[beat 1] (narration): Salt in your mouth. Sand under your cheek. The surf drags at your boots and lets go.
+[beat 1] (narration): You sit up. A harbour. A crooked town climbing the hill behind it. You do not know its name.
+[beat 1] (narration): You do not know your own name, either.
+[beat 1] (narration): Something stiff in your coat pocket. A page, torn from a book. It is all you have.
+[beat 1] (narration): A low wooden building, open to the sea air. Lamplight. Voices. The smell of rum punch.
+[beat 2] (narration): You push the door open. Warm air, candle smoke, and every voice in the room dropping by half.
+[beat 2] (narration): Plank floor. Long tables. Barrels for seats. Candles guttering in the sea air.
+[beat 2] (narration): Behind the bar, a big man is wiping a mug. He looks up at you.
+[beat 2] (narration): His hand stops. For half a breath he stares at your face like a man seeing a ghost.
+[beat 2] (narration): Then the cloth moves again, and his eyes go somewhere else.
+[beat 2] Bartender <script>: Tide's been throwing all sorts up today. Sit anywhere that isn't taken.
+[beat 2] Bo'sun <llm>: A moment. I'm at the foot of a column.
+[beat 2] Bo'sun <llm>: Faces are not in my books. Stores are.
+[beat 2] Rogue <llm>: Mm. Find another corner.
+[beat 2] Rogue <fallback>: If you knew me, you'd know better than to ask.
+[beat 2] Bartender <llm>: Rum punch, or the door. Choose quick.
+[beat 2] Bartender <llm>: Faces wash in on every tide. I serve them and forget them.
+[beat 2] (narration): He says it to the mug, not to you.
+[beat 2] Bartender <fallback>: One wet stranger looks much like another. Drink?
+[beat 2] (narration): He says it to the mug, not to you.
+[beat 2] Bartender <fallback>: I pour. I don't keep a list of who I pour for.
+[beat 2] (narration): He says it to the mug, not to you.
+[beat 2] Bartender <fallback>: You've a common sort of face. Half the harbour has it.
+[beat 2] (narration): He says it to the mug, not to you.
+[beat 2] Bartender <llm>: I don't keep faces, friend. Only tabs.
+[beat 2] (narration): He says it to the mug, not to you.
+[beat 3] (narration): You take the torn page from your pocket and smooth it flat on the bar.
+[beat 3] (narration): Ruled lines. Columns of figures. A page from a ship's ledger.
+[beat 3] (narration): The bartender looks at it the way a man looks at a lit fuse.
+[beat 3] Bartender <script>: I pour drinks. I don't read books.
+[beat 3] Bartender <script>: If it's figures, that's the bo'sun's trade. Table by the barrels. And keep that thing off my bar.
+[beat 3] (narration): In the corner, the rogue's hat has tilted up, just a little. At the far table, a quill has stopped scratching.
+[beat 3] Bartender <llm>: Wet through, are you. Sit where the candle is.
+[beat 3] Bartender <llm>: Faces wash in on every tide. I serve them and forget them.
+[beat 3] (narration): The bo'sun has not turned a leaf since the page came out. His quill hangs over the book.
+[beat 3] (narration): You set the torn page down beside his ledger.
+[beat 3] (narration): He reads one line, then the next. 40 barrels. 60 hogsheads. 800 pieces of eight.
+[beat 3] (narration): His finger stops at the foot of the page, on 800 pieces.
+[beat 3] (narration): The bo'sun goes very quiet.
+[beat 3] (narration): The quill does not move. The candle between you is suddenly the loudest thing in the room.
+[beat 3] You: You can read it. What does it say?
+[beat 3] (narration): He does not answer. He turns the page face down, very gently, and keeps his hand flat on top of it.
+[beat 3] Bartender <llm>: Cups up, the lot of you. Punch is on the bar.
+[beat 3] (narration): In the corner, the rogue tips his hat back and crooks one finger at you.
+[beat 4] Bartender <fallback>: Sit, drink, or stand out of the way of those who do.
+[beat 4] Bartender <script>: I pour. I don't keep a list of who I pour for.
+[beat 4] (narration): The rogue hooks a stool out with his boot. He does not ask you to sit so much as allow it.
+[beat 4] Rogue <script>: That page under the bo'sun's hand. You carried it in, so it's yours to carry out.
+[beat 4] Rogue <script>: Fetch it back before the old man gets his spectacles on it. Bring it to me. I'll see you fed, dressed, and on a boat by morning.
+[beat 4] Rogue <script>: Sentiment. I collect torn paper.
+[beat 4] (narration): He smiles. It does not reach his eyes.
+[beat 4] Rogue <script>: Everybody in Tortuga is hiding something. I'm only better at it.
+[beat 4] (narration): He smiles. It does not reach his eyes.
+[beat 4] Rogue <script>: Ask me again with a full purse.
+[beat 4] (narration): He smiles. It does not reach his eyes.
+[beat 5] Rogue <script>: Your funeral. Figures only say what's gone. They never say who took it.
+[beat 5] (narration): Across the room, the bo'sun has put his spectacles on and turned the page face up.
+[beat 5] (narration): The bo'sun has his spectacles on. The page lies face up between you.
+[beat 5] Bo'sun <script>: It is a tally of stores taken aboard. The written figures are one hand. I made the count beside them myself.
+[beat 5] Bo'sun <script>: Rum. The page says 40 barrels. I counted 28 in the hold. 12 barrels short.
+[beat 5] Bo'sun <script>: Sugar. 60 hogsheads written, 60 counted. The sugar is honest.
+[beat 5] Bo'sun <script>: Silver. 800 pieces of eight written. I counted 650.
+[beat 5] Bo'sun <script>: So the total at the foot is wrong. It says 800 pieces. There are 650. 150 pieces of eight are missing.
+[beat 5] (narration): He says it very quietly. In the corner, the rogue has stopped smiling.
+[beat 5] Bartender <script>: That's enough of that at my bar. Who's dry?
+[beat 6] (narration): Three men in a room, and one torn page. The bo'sun's count. The rogue's offer. The bartender's careful silence.
+[beat 6] (narration): Nobody here is going to tell you who you were. You will have to decide who to trust, and what the page really says.
+[beat 6] (narration): And the page. What does it really say?
+[beat 6] You: 800 written, 650 counted. Somebody took 150 pieces of eight, and this page proves it.
+[beat 6] (narration): You slide the page back across the table, under the bo'sun's hand.
+[beat 6] Bo'sun <script>: Then I keep the count, and you keep close to me. Somebody will come asking for this.
+[beat 6] (narration): In the corner, a stool is empty. Nobody saw the rogue go.
+[beat 6] (narration): Outside, the tide is going out. You still do not know your name. But you know what you are holding, and who you are standing next to.
+[beat 6] (narration): The end, for now. Thank you for playing Buccaneer Banter.

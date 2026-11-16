@@ -1,5 +1,7 @@
-node_modules/
+# Never commit keys or local settings.
 .env
 .env.*
-*.log
+*.key
+node_modules/
 __pycache__/
+.DS_Store

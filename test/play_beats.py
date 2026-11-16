@@ -5,6 +5,9 @@ Three runs:
   2. touch, on a phone-sized screen, using only simulated finger touches
   3. keyboard, shortest path, a different ending
 
+This is the NO-KEY run: start the server without ANTHROPIC_API_KEY set. The
+run with the LLM layer switched on is test/play_llm.py.
+
 Needs:  pip install playwright   and Google Chrome (set BB_CHROME to its path if
         it is not at /usr/bin/google-chrome).
 Run:    start the game first (node serve.js), then:  python3 test/play_beats.py
@@ -47,6 +50,18 @@ class Game:
         self.page = page
         self.tag = tag
         self.seen = []  # (beat, text) for every line and choice list shown
+        self.sources = []  # (beat, speaker, text, source) for every spoken line
+
+    def settled(self, limit=20.0):
+        """The box, once it is not waiting on the orchestrator for a line."""
+        t0 = time.time()
+        u = self.ui()
+        while u["active"] and u["mode"] == "wait" and time.time() - t0 < limit:
+            time.sleep(0.05)
+            u = self.ui()
+        if u["mode"] == "wait":
+            check(False, "a line was still waiting on the orchestrator after 20 seconds")
+        return u
 
     def js(self, expr):
         return self.page.evaluate(f"(() => {{ const b = window.__bb; return {expr}; }})()")
@@ -63,7 +78,7 @@ class Game:
         """Step through spoken lines until choices appear or the box closes."""
         out = []
         for _ in range(60):
-            u = self.ui()
+            u = self.settled()
             if not u["active"] or u["mode"] != "line":
                 break
             if expect_beat is not None and u["beat"] != expect_beat:
@@ -72,6 +87,7 @@ class Game:
                 check(False, "game marked ended while ending lines were still up")
             out.append(u["text"])
             self.seen.append((u["beat"], f'{u["speaker"] or "(narration)"}: {u["text"]}'))
+            self.sources.append((u["beat"], u["speaker"], u["text"], u["source"]))
             before = (u["node"], u["text"], u["speaker"])
             self.advance()
             for _ in range(40):  # wait until this press/tap has landed
@@ -82,7 +98,7 @@ class Game:
         return " ".join(out), len(out)
 
     def choose(self, text, via=None):
-        u = self.ui()
+        u = self.settled()
         check(u["mode"] == "choice" and text in u["choices"], f'choice offered: "{text}"')
         check(u["selected"] == -1, "no choice is highlighted when the list opens") if via == "strict" else None
         self.seen.append((u["beat"], "  choices: " + " | ".join(u["choices"])))
@@ -462,6 +478,11 @@ def play(g, full, trust, says):
     hist = g.js("b.state.history")
     check([h["beat"] for h in hist] == [2, 3, 4, 5, 6, "end"], "story moved exactly six times, in order, each on a player choice")
     check(g.js("b.state.factViolations.length") == 0, "checker pass flagged no line")
+    if not os.environ.get("BB_EXPECT_LLM"):
+        check(g.js("b.llm.checked") and not g.js("b.llm.enabled"), "LLM layer is off (no API key on the server)")
+        check(g.js("b.director.calls") == 0 and g.js("b.director.shown.llm") == 0, "zero LLM calls were made in the whole run")
+        check(len(g.sources) > 40 and all(src == "script" for _, _, _, src in g.sources), f"all {len(g.sources)} spoken lines were hard-coded lines")
+        check(g.js("b.director.rejected.length") == 0, "the orchestrator checked every NPC line and rejected none")
     with open(os.path.join(SHOTS, f"{g.tag}-transcript.txt"), "w") as f:
         f.write("\n".join(f"[beat {b}] {t}" for b, t in g.seen) + "\n")
 

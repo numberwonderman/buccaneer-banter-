@@ -15,13 +15,23 @@
 // their finger.
 //
 // Every line goes through the checker pass (fill tokens from the fact sheet,
-// then reject any number the current beat is not allowed to show).
+// then reject any number the current beat is not allowed to show). Every NPC
+// line also goes to the orchestrator (director.js), which checks it against
+// the fact sheet, the speaker's role card and the current beat.
+//
+// LLM layer: when it is switched on, an NPC's bank line (a greeting, a
+// deflection, a redirect) is first offered to the orchestrator, which may
+// answer with a generated line. The hard-coded bank line is picked first and
+// is what shows if anything at all goes wrong. While the orchestrator is
+// working the box shows the speaker's name and "..." (mode "wait").
 
 import { fill, badNumbers, allowedInBeat } from "./facts.js";
 import { state, applyChoice, settle } from "./beats.js";
 import { NODES } from "./script.js";
 import { pick, BANK } from "./lines.js";
 import { touch } from "./touch.js";
+import { NPC_BY_SPEAKER } from "./roles.js";
+import { director } from "./stage.js";
 
 const CREAM = [245, 232, 200];
 const GOLD = [255, 205, 80];
@@ -32,7 +42,7 @@ const ROW = { x: 36, w: 888, h: 38, step: 44, top: 44 };
 const TAP_PAUSE = 800; // milliseconds without a tap before a choice tap counts
 
 // What the box is showing right now. Also read by the play-test.
-export const ui = { active: false, mode: "idle", node: null, speaker: "", text: "", choices: [], rects: [], selected: -1, page: false };
+export const ui = { active: false, mode: "idle", node: null, speaker: "", text: "", choices: [], rects: [], selected: -1, page: false, source: "" };
 
 export function createDialogue(k, onChange) {
   const f = (z) => [k.fixed(), k.z(z)];
@@ -57,15 +67,25 @@ export function createDialogue(k, onChange) {
   let lastTap = 0;  // clock time of the last tap, counted or not
   let shownAt = 0;  // clock time the choice list appeared
   let nudge = false;
+  let waitTicket = 0;  // goes up whenever a wait is started or abandoned
+  let lastChoice = ""; // what the player last picked, for the orchestrator's short memory
 
   // Checker pass. Returns text that is safe to show in this node's beat.
-  function checked(raw, fallback) {
+  // npc is set when the line is spoken by the bartender, rogue or bo'sun.
+  function checked(raw, fallback, npc) {
     const text = fill(raw);
     const bad = badNumbers(text, allowedInBeat(node.beat));
     if (bad.length) {
       state.factViolations.push({ text, bad, beat: node.beat });
       console.error("Fact-sheet violation, line replaced:", text, bad);
       return fallback;
+    }
+    if (npc) {
+      const r = director.checkScripted({ npc, beat: node.beat, text });
+      if (!r.ok) {
+        console.error("Orchestrator rejected a written line, line replaced:", text, r.reasons);
+        return fallback;
+      }
     }
     return text;
   }
@@ -80,7 +100,8 @@ export function createDialogue(k, onChange) {
     box.pos.y = top;
     nameT.pos.y = top + 12;
     box.hidden = nameT.hidden = hintT.hidden = !on;
-    bodyT.hidden = !(on && ui.mode === "line");
+    const speaking = ui.mode === "line" || ui.mode === "wait";
+    bodyT.hidden = !(on && speaking);
     pageS.hidden = !(on && ui.page === true);
     pageC.hidden = !(on && ui.page === "counted");
     ui.rects = [];
@@ -98,16 +119,16 @@ export function createDialogue(k, onChange) {
       ui.rects.push({ x: ROW.x, y, w: ROW.w, h: ROW.h });
     });
     if (!on) return;
-    if (ui.mode === "line") {
+    if (speaking) {
       nameT.text = ui.speaker || "";
       bodyT.text = ui.text;
-      hintT.text = touch.enabled ? "Tap, or press E: continue" : "E or Space: continue";
+      hintT.text = ui.mode === "wait" ? "" : touch.enabled ? "Tap, or press E: continue" : "E or Space: continue";
     } else {
       nameT.text = "What do you do?";
       hintT.text = nudge ? "Choose first: Up/Down, a number, or tap" : touch.enabled ? "Tap a choice, or press its number" : "Up/Down then E, or press the number";
       hintT.color = k.rgb(...(nudge ? GOLD : DIM));
     }
-    if (ui.mode === "line") hintT.color = k.rgb(...DIM);
+    if (speaking) hintT.color = k.rgb(...DIM);
   }
 
   // Tell the scene at once when the box opens or closes (it shows and hides
@@ -117,15 +138,36 @@ export function createDialogue(k, onChange) {
     onChange?.(ui.active);
   }
 
+  function present(text, source) {
+    ui.mode = "line";
+    ui.text = text;
+    ui.source = source; // "script", "llm" or "fallback"
+    director.remember(ui.speaker, text);
+    render();
+  }
+
   function showLine() {
     const line = lines[idx];
-    ui.mode = "line";
+    const npc = NPC_BY_SPEAKER[line.who];
+    // The hard-coded line is always chosen and checked first.
+    const written = checked(line.bank ? pick(line.bank, state.bankIdx) : line.text, BANK.narrator.idle[0], npc);
     ui.speaker = line.who;
-    ui.text = checked(line.bank ? pick(line.bank, state.bankIdx) : line.text, BANK.narrator.idle[0]);
     ui.page = line.page || false;
     ui.choices = [];
     ui.selected = -1;
+    if (!(npc && line.bank && director.live())) return present(written, "script");
+
+    // In-the-moment NPC line. The orchestrator always answers: with a
+    // generated line that passed its checks, or with the written one.
+    const ticket = ++waitTicket;
+    ui.mode = "wait";
+    ui.text = "...";
+    ui.source = "wait";
     render();
+    director.line({ npc, kind: line.bank, beat: node.beat, fallback: written, player: lastChoice }).then((r) => {
+      if (ticket !== waitTicket || !ui.active) return;
+      present(r.text, r.source);
+    });
   }
 
   function showChoices() {
@@ -146,6 +188,8 @@ export function createDialogue(k, onChange) {
     ui.choices = [];
     ui.selected = -1;
     ui.page = false;
+    ui.source = "";
+    waitTicket++;
     node = null;
     settle(); // a waiting beat change lands only now, after the last line
     changed();
@@ -171,6 +215,7 @@ export function createDialogue(k, onChange) {
   function choose(i) {
     const c = choices[i];
     if (!c || ui.mode !== "choice") return;
+    lastChoice = ui.choices[i];
     applyChoice(c); // the one and only place the story can move
     if (c.scene) {
       close();
@@ -210,6 +255,7 @@ export function createDialogue(k, onChange) {
     lastTap = now;
     if (!ui.active) return;
     if (ui.mode === "line") return confirm();
+    if (ui.mode !== "choice") return; // waiting for a line: nothing to tap
     if (sinceTap < TAP_PAUSE || now - shownAt < TAP_PAUSE) return;
     const i = ui.rects.findIndex((r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y - 3 && p.y <= r.y + r.h + 3);
     if (i >= 0) choose(i);

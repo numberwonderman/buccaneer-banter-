@@ -1,4 +1,5 @@
-// Buccaneer Banter - playable spine, beats 1-6. Hard-coded: no LLM, no TTS.
+// Buccaneer Banter - beats 1-6. Hard-coded spine, with an optional LLM
+// dialogue layer on top, run by the orchestrator (director.js). No TTS.
 
 import kaplay from "../lib/kaplay.mjs";
 import { loadAllSprites } from "./sprites.js";
@@ -10,6 +11,8 @@ import { pageHolder } from "./world.js";
 import { ui } from "./dialogue.js";
 import { probe } from "./world.js";
 import { W, H } from "./layout.js";
+import { director } from "./stage.js";
+import { llm, initLLM } from "./llm.js";
 
 const k = kaplay({
   width: W,
@@ -32,7 +35,25 @@ loadAllSprites(k);
 registerScenes(k);
 
 // Read-only window into the game, for the play-test and the console.
-window.__bb = { state, ui, probe, touch, pageHolder, ready: false };
+window.__bb = { state, ui, probe, touch, pageHolder, director: director.stats, llm, ready: false };
+
+// Find out, in the background, whether a server with an API key is behind
+// this page. The game does not wait for the answer: until it arrives, and
+// whenever it is "no", every line is a hard-coded one.
+initLLM().then(showDebug, showDebug);
+
+// ?debug=1 in the address shows a small counter of LLM calls. For demos only.
+function showDebug() {
+  if (new URLSearchParams(location.search).get("debug") !== "1") return;
+  const el = document.createElement("div");
+  el.id = "bb-debug";
+  el.style.cssText = "position:fixed;left:12px;top:72px;z-index:50;font:13px monospace;color:#f5e8c8;background:rgba(16,12,8,.85);padding:4px 8px;border-radius:4px;pointer-events:none";
+  document.body.appendChild(el);
+  setInterval(() => {
+    const s = director.stats;
+    el.textContent = `LLM ${llm.enabled ? "on" : "off"} | calls ${s.calls}/${s.cap} | generated ${s.shown.llm} | fallback ${s.shown.fallback} | rejected ${s.rejected.length}${ui.source ? " | this line: " + ui.source : ""}`;
+  }, 250);
+}
 
 k.onLoad(() => {
   k.go("shore");
