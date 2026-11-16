@@ -1,5 +1,6 @@
 // Buccaneer Banter - beats 1-6. Hard-coded spine, with an optional LLM
 // dialogue layer on top, run by the orchestrator (director.js). No TTS.
+// Opens on a title screen, with a synthesised soundtrack (music.js).
 
 import kaplay from "../lib/kaplay.mjs";
 import { loadAllSprites } from "./sprites.js";
@@ -13,6 +14,7 @@ import { probe } from "./world.js";
 import { W, H } from "./layout.js";
 import { director } from "./stage.js";
 import { llm, initLLM } from "./llm.js";
+import { initMusic, music } from "./music.js";
 
 const k = kaplay({
   width: W,
@@ -31,11 +33,12 @@ const seedParam = Number(new URLSearchParams(location.search).get("seed"));
 freezeSetup(rollSetup(Number.isFinite(seedParam) && seedParam > 0 ? seedParam : Date.now()));
 
 initTouch();
+initMusic();
 loadAllSprites(k);
 registerScenes(k);
 
 // Read-only window into the game, for the play-test and the console.
-window.__bb = { state, ui, probe, touch, pageHolder, director: director.stats, llm, ready: false };
+window.__bb = { state, ui, probe, touch, pageHolder, director: director.stats, llm, music, ready: false };
 
 // Find out, in the background, whether a server with an API key is behind
 // this page. The game does not wait for the answer: until it arrives, and
@@ -56,6 +59,6 @@ function showDebug() {
 }
 
 k.onLoad(() => {
-  k.go("shore");
+  k.go("title");
   window.__bb.ready = true;
 });

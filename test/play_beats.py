@@ -227,6 +227,47 @@ def play(g, full, trust, says):
     how = "keys" if kb else "touch"
     print(f"\n===== {g.tag}: {how}, {'long way round' if full else 'shortest path'}, ending {trust}/{says} =====")
 
+    # ---------------- Title screen and music ----------------
+    print("Title")
+    u = g.ui()
+    check(u["scene"] == "title" and not u["active"] and u["beat"] == 1, "opens on the title screen; the story has not started")
+    m = g.js("({...b.music})")
+    check(m["available"] and not m["started"] and not m["muted"], "no sound yet: the browser allows none before the first key or tap")
+    check(g.js("getComputedStyle(document.querySelector('#touch-ui') || document.body).display") == ("none" if not kb else "block"), "walk and Talk buttons are hidden on the title screen" if not kb else "title screen has no on-screen walk buttons")
+    g.shot("00-title")
+    if kb:
+        g.page.keyboard.press("m")
+        time.sleep(0.3)
+        m = g.js("({...b.music})")
+        check(m["started"] and m["muted"] and m["mood"] == "shore" and g.ui()["scene"] == "title", "M switches the music off (and does not start the game)")
+        check(g.js("document.querySelector('#music-toggle').textContent") == "Music: off", 'the button reads "Music: off"')
+        g.page.keyboard.press("m")
+        n0 = g.js("b.music.notes")
+        time.sleep(1.2)
+        m = g.js("({...b.music})")
+        loud = max(g.js("b.music.level().rms") for _ in range(8) if not time.sleep(0.12))
+        check(not m["muted"] and m["notes"] > n0 and g.js("localStorage.getItem('buccaneer-banter-music')") == "on", f"M switches it back on; the tune is being played ({m['notes'] - n0} notes in 1.2 s); the choice is remembered")
+        check(0.004 < loud < 0.5, f"sound is really coming out at a moderate level (loudest reading {loud:.3f} on a scale of 0 to 1)")
+        for key in ["a", "ArrowDown", "1"]:
+            g.page.keyboard.press(key)
+        check(g.ui()["scene"] == "title", "other keys do not start the game")
+        g.page.keyboard.press("Enter")
+    else:
+        g.tap(*g.to_screen(480, 430))
+    g.page.wait_for_function("window.__bb.probe.scene === 'shore'", timeout=4000)
+    time.sleep(0.4)
+    m = g.js("({...b.music})")
+    check(m["started"] and m["mood"] == "shore", ("Enter" if kb else "a tap") + " begins the game; the shore music (slow tune over the sea) is playing")
+    if not kb:
+        before = g.ui()
+        g.tap(*g.centre("#music-toggle"))
+        time.sleep(0.3)
+        after = g.ui()
+        check(g.js("b.music.muted") and after["text"] == before["text"] and after["active"], "tapping the Music button switches it off and does not touch the dialogue")
+        g.tap(*g.centre("#music-toggle"))
+        time.sleep(0.3)
+        check(not g.js("b.music.muted") and g.ui()["text"] == before["text"], "tapping it again switches it back on")
+
     # ---------------- Beat 1: wash up ----------------
     print("Beat 1")
     u = g.ui()
@@ -307,6 +348,17 @@ def play(g, full, trust, says):
     print("Beat 2")
     u = g.ui()
     check(u["scene"] == "tavern" and u["beat"] == 2, '"Go inside" advances to beat 2 and loads the tavern')
+    check(g.js("b.music.mood") == "tavern", "the music changes to the tavern jig")
+    if kb and full:
+        time.sleep(1.5)  # let the change-over finish
+        levels = [g.js("b.music.level()") for _ in range(25) if not time.sleep(0.1)]
+        top, peak = max(v["rms"] for v in levels), max(v["peak"] for v in levels)
+        check(0.01 < top < 0.5 and peak < 0.99, f"the tavern jig is sounding and not distorting (level {top:.3f}, highest peak {peak:.2f})")
+        g.page.keyboard.press("m")
+        time.sleep(0.5)
+        quiet = max(g.js("b.music.level().rms") for _ in range(5) if not time.sleep(0.1))
+        check(quiet < 0.001 and g.ui()["active"], f"M in the middle of the game silences it (level {quiet:.4f}) and does not disturb the dialogue")
+        g.page.keyboard.press("m")
     text, n = g.read(expect_beat=2)
     check(n == 6 and "seeing a ghost" in text and "his eyes go somewhere else" in text, "six entrance lines; bartender recognises the face, then looks away")
     g.shot("05-tavern")
@@ -478,6 +530,7 @@ def play(g, full, trust, says):
     hist = g.js("b.state.history")
     check([h["beat"] for h in hist] == [2, 3, 4, 5, 6, "end"], "story moved exactly six times, in order, each on a player choice")
     check(g.js("b.state.factViolations.length") == 0, "checker pass flagged no line")
+    check(g.js("b.music.mood") == "tavern" and g.js("b.music.notes") > 500, f"music played throughout ({g.js('b.music.notes')} notes scheduled)")
     if not os.environ.get("BB_EXPECT_LLM"):
         check(g.js("b.llm.checked") and not g.js("b.llm.enabled"), "LLM layer is off (no API key on the server)")
         check(g.js("b.director.calls") == 0 and g.js("b.director.shown.llm") == 0, "zero LLM calls were made in the whole run")

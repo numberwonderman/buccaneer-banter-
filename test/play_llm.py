@@ -347,7 +347,10 @@ def main():
                 page.on("response", grab)
                 page.goto(url)
                 page.wait_for_function("window.__bb && window.__bb.ready && window.__bb.llm.checked", timeout=15000)
-                time.sleep(0.3)
+                time.sleep(0.6)
+                page.keyboard.press("Enter")  # past the title screen
+                page.wait_for_function("window.__bb.probe.scene === 'shore'", timeout=4000)
+                time.sleep(0.4)
                 return ctx, page
 
             ctx, page = open_page(GAME + "?debug=1")

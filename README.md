@@ -139,6 +139,20 @@ What the LLM can and cannot do:
   no brief contains a counted figure before beat 5 — so those cannot leak.
 - The player never types free text, so there is nothing to inject into the brief.
 
+## Title screen and music
+
+The game opens on a title screen. **Press Enter** (or Space, or E), or **tap**, to begin.
+
+There is a soundtrack: an original 16-bar jig written for this game, played by the browser's
+own synthesiser. There are no sound files and nothing is downloaded (`src/music.js`).
+
+- On the title screen and the beach it is slow and soft, with the sea underneath.
+- In the tavern it is up to speed, with bass, squeezebox chords and a hand drum.
+- **M** switches the music off and on. So does the **Music** button at the top of the screen.
+  The choice is remembered the next time you open the game in the same browser.
+- Browsers do not allow a page to make sound until you press a key or tap, so the music
+  starts at your first key or tap.
+
 ## Controls
 
 **Keyboard**
@@ -183,6 +197,7 @@ The top-left banner always says which beat you are in and what to do next.
 | `src/prompt.js` | Writes the brief the server sends to the LLM, from the role cards |
 | `src/llm.js` | Browser side of the LLM layer: asks `serve.js` for a line. Never sees the key |
 | `src/stage.js` | Creates the one orchestrator for the session |
+| `src/music.js` | The soundtrack: the tune as notes, the synthesiser, the Music button and the M key |
 | `src/facts.js` | **The ledger fact sheet.** Frozen. The only place the numbers live |
 | `src/setup.js` | **The setup roll**: what the rogue is hiding, rolled once, then frozen |
 | `src/beats.js` | **Beat gating.** The beat can only change through a player choice |
@@ -191,7 +206,7 @@ The top-left banner always says which beat you are in and what to do next.
 | `src/dialogue.js` | Dialogue box, choices (keys and taps), and the checker pass on every line |
 | `src/touch.js` | On-screen walk and Talk buttons for phones |
 | `src/world.js` | Player, walking, collisions, prompt, beat banner |
-| `src/scenes.js` | The shore scene and the tavern scene |
+| `src/scenes.js` | The title screen, the shore scene and the tavern scene |
 | `src/layout.js` | Where everything stands (used for both drawing and collisions) |
 | `src/sprites.js` | Placeholder sprites, painted in code — no image files |
 | `test/check-lines.mjs` | Checks every written line against the fact sheet, the beat gate and the setup roll |
@@ -269,7 +284,11 @@ python3 test/play_llm.py         # starts its own servers; uses the stand-in, no
 - NPCs keep a four-line memory within a session, not a summary between beats.
 - TTS.
 - Only one rogue secret exists, so the setup roll cannot yet make two runs differ.
-- No sound, no save/load, no title screen, no walking animation, no restart button (reload the page).
+- The soundtrack is one 16-bar tune in two arrangements. No sound effects (footsteps, door,
+  voices), no separate ending music, no volume slider (on or off only).
+- The music was checked by measurement, not by ear: the tests confirm sound is produced at a
+  moderate level without distortion, but nobody has listened to it yet.
+- No save/load, no walking animation, no restart button (reload the page).
 - You cannot walk back out to the shore from the tavern.
 - Touch controls were tested with simulated touches in desktop Chrome, not on a real phone.
 - In portrait the picture is small; the game asks you to turn the phone sideways.
